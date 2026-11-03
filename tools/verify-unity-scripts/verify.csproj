@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Fast stand-in for Unity's Assembly-CSharp compile. Lets us iterate on the AssetRipper
+       scripts in seconds instead of round-tripping through the editor's importer.
+       Nothing here is part of the Unity project; it only reads it. -->
+  <PropertyGroup>
+    <!-- Unity 2021.3's API compatibility level is .NET Standard 2.1. Targeting net472 here
+         produced phantom errors (MathF, Index/Range, GetValueOrDefault, TryAdd) that Unity
+         itself never reported. -->
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9</LangVersion>
+    <AssemblyName>VerifyAssemblyCSharp</AssemblyName>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>CS0108;CS0114;CS0169;CS0649;CS1591;CS0219;CS0162;CS0067;CS0414;CS0618;CS0672</NoWarn>
+    <AssemblySearchPaths>{HintPathFromItem};{TargetFrameworkDirectory};{RawFileName}</AssemblySearchPaths>
+    <DefineConstants>UNITY_2021_3_OR_NEWER;UNITY_2021_3;UNITY_2021;UNITY_5_3_OR_NEWER;UNITY_STANDALONE;UNITY_STANDALONE_WIN;ENABLE_INPUT_SYSTEM</DefineConstants>
+
+    <ScriptsDir>D:\Straftat splitscreen\UnityProject\ExportedProject\Assets\Scripts\Assembly-CSharp\</ScriptsDir>
+    <PluginsDir>D:\Straftat splitscreen\UnityProject\ExportedProject\Assets\Plugins\</PluginsDir>
+    <ManagedDir>D:\SteamLibrary\steamapps\common\STRAFTAT\STRAFTAT_Data\Managed\</ManagedDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(ScriptsDir)**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The project's own plugin DLLs are the authority: they are what Unity compiles against. -->
+    <Reference Include="$(PluginsDir)*.dll" Private="false" />
+    <!-- Engine assemblies are not under Assets/, so borrow the game's (same 2021.3.45f2 build). -->
+    <Reference Include="$(ManagedDir)UnityEngine*.dll" Private="false" />
+    <Reference Include="$(ManagedDir)Assembly-CSharp-firstpass.dll" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,19 @@
+# Allowlist: only the mod source, docs and small helper scripts are tracked.
+# Game files, decompiled code, the Unity export and third-party tools stay local.
+/*
+!/.gitignore
+!/mod/
+!/docs/
+!/tools/
+
+/tools/*
+!/tools/*.py
+!/tools/verify-unity-scripts/
+/tools/verify-unity-scripts/*
+!/tools/verify-unity-scripts/*.csproj
+
+# Build output
+bin/
+obj/
+*.user
+.vs/

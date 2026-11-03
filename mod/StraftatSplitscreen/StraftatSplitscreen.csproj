@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>StraftatSplitscreen</AssemblyName>
+    <!-- Keep in step with Plugin.PluginVersion; the game's AssemblyScanner reports this one. -->
+    <Version>0.30.0</Version>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- Decompiled game code has plenty of shadowing/unused warnings; don't drown in them. -->
+    <NoWarn>CS0649;CS0169;CS0108;CS0114</NoWarn>
+
+    <!-- Everything below keys off these two. This is the modding COPY of the game, not the
+         Steam install - Steam's copy under C:\Program Files (x86)\ stays pristine. -->
+    <GameDir>D:\Straftat splitscreen\game\STRAFTAT\</GameDir>
+    <ManagedDir>$(GameDir)STRAFTAT_Data\Managed\</ManagedDir>
+    <BepInExDir>$(GameDir)BepInEx\</BepInExDir>
+    <PluginDeployDir>$(BepInExDir)plugins\StraftatSplitscreen\</PluginDeployDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- net472 reference assemblies, so this builds without a Framework targeting pack installed. -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Private=false: these ship with the game, never copy them into the plugin folder. -->
+    <Reference Include="$(BepInExDir)core\BepInEx.dll" Private="false" />
+    <Reference Include="$(BepInExDir)core\0Harmony.dll" Private="false" />
+
+    <Reference Include="$(ManagedDir)Assembly-CSharp.dll" Private="false" />
+    <Reference Include="$(ManagedDir)Assembly-CSharp-firstpass.dll" Private="false" />
+    <Reference Include="$(ManagedDir)FishNet.Runtime.dll" Private="false" />
+    <Reference Include="$(ManagedDir)Unity.InputSystem.dll" Private="false" />
+    <Reference Include="$(ManagedDir)Unity.TextMeshPro.dll" Private="false" />
+    <Reference Include="$(ManagedDir)Unity.Postprocessing.Runtime.dll" Private="false" />
+    <Reference Include="$(ManagedDir)DOTween.dll" Private="false" />
+    <Reference Include="$(ManagedDir)com.rlabrecque.steamworks.net.dll" Private="false" />
+    <Reference Include="$(ManagedDir)UnityEngine*.dll" Private="false" />
+  </ItemGroup>
+
+  <!-- Build once, and it's already in the game. Just relaunch STRAFTAT. -->
+  <Target Name="DeployToGame" AfterTargets="Build">
+    <MakeDir Directories="$(PluginDeployDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginDeployDir)" />
+    <Message Importance="high" Text="Deployed $(TargetFileName) -> $(PluginDeployDir)" />
+  </Target>
+
+</Project>
+
